@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShorpAzha | Map Serveur Goff</title>
+    <style>
+        :root {
+            --screen-width: 100vw;
+            --screen-height: calc(var(--screen-width) * 3136 / 4180);
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #svg-container {
+            width: var(--screen-width);
+            height: var(--screen-height);
+            overflow: hidden;
+            position: relative;
+        }
+        svg {
+            transform-origin: 0 0;
+            transition: transform 0.2s;
+        }
+        #popup {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+     <div id="svg-container">
+        <svg id="mySvg" width="var(--screen-width)" height="var(--screen-height)" viewbox="0 0 4180 3136" preserveAspectRatio="xMinYMin" xmlns="http://www.w3.org/2000/svg">
+            <image href="images/mapv3.png" width="4180" height="3136"/>
+            <polygon points="1232,1407 1348,1406 1350,1384 1372,1383 1372,1270 1348,1269 1349,1245 1231,1245 1230,1268 1208,1268 1206,1382 1230,1382" fill="rgb(0 0 0 / 0%)" onmouseover="showPopup(event, 'Château de Hydra')" onmouseout="hidePopup()"/>
+            <polygon points="863,1657 881,1633 907,1622 930,1621 958,1634 973,1640 987,1656 1001,1664 1014,1661 1026,1651 1036,1650 1062,1687 1050,1693 1040,1701 1040,1832 909,1834 899,1847 884,1847 867,1832 866,1816 880,1803 881,1746 867,1729 863,1691" fill="rgb(0 0 0 / 0%)" onmouseover="showPopup(event, 'Château de Shorp')" onmouseout="hidePopup()"/>
+            <polygon points="685,1230 700,1230 700,1243 685,1243" fill="rgb(0 0 0 / 0%)" onmouseover="showPopup(event, 'Spawn')" onmouseout="hidePopup()"/>
+        </svg>
+    </div>
+    <div id="popup"></div>
+    <script>
+        const svg = document.getElementById('svg-container');
+        let scale = 1;
+        let isDragging = false;
+        let startX, startY, offsetX = 0, offsetY = 0;
+
+        svg.addEventListener('wheel', (event) => {
+            event.preventDefault();
+            const mouseX = event.offsetX;
+            const mouseY = event.offsetY;
+
+            const zoomFactor = 0.1;
+            if (event.deltaY < 0) {
+                scale += zoomFactor;
+            } else {
+                scale = Math.max(1, scale - zoomFactor);
+            }
+
+            svg.style.transform = `scale(${scale}) translate(${offsetX}px, ${offsetY}px)`;
+            svg.style.transformOrigin = `${mouseX}px ${mouseY}px`;
+        });
+
+        svg.addEventListener('mousedown', (event) => {
+            if (event.button === 0) {
+                isDragging = true;
+                startX = event.clientX - offsetX;
+                startY = event.clientY - offsetY;
+                svg.style.cursor = 'grabbing';
+            }
+        });
+
+        svg.addEventListener('mousemove', (event) => {
+            if (isDragging) {
+                offsetX = event.clientX - startX;
+                offsetY = event.clientY - startY;
+                svg.style.transform = `scale(${scale}) translate(${offsetX}px, ${offsetY}px)`;
+            }
+        });
+
+        svg.addEventListener('mouseup', () => {
+            isDragging = false;
+            svg.style.cursor = 'grab';
+        });
+
+        svg.addEventListener('mouseleave', () => {
+            isDragging = false;
+            svg.style.cursor = 'grab';
+        });
+
+        function showPopup(event, message) {
+            const popup = document.getElementById('popup');
+            popup.innerHTML = message;
+            popup.style.display = 'block';
+            popup.style.left = event.pageX + 'px';
+            popup.style.top = event.pageY + 'px';
+        }
+
+        function hidePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
