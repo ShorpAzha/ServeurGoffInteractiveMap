@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Interactive</title>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+    <script>
+        function initMap() {
+            var options = {
+                zoom: 5,
+                center: { lat: 48.8566, lng: 2.3522 } // Paris
+            };
+            var map = new google.maps.Map(document.getElementById('map'), options);
+
+            var waypoint1 = { lat: 48.8566, lng: 2.3522 }; // Paris
+            var waypoint2 = { lat: 45.7640, lng: 4.8357 }; // Lyon
+
+            var marker1 = new google.maps.Marker({
+                position: waypoint1,
+                map: map,
+                title: 'Paris'
+            });
+
+            var marker2 = new google.maps.Marker({
+                position: waypoint2,
+                map: map,
+                title: 'Lyon'
+            });
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <h1>Carte avec Points de Repère Personnalisés</h1>
+    <div id="map"></div>
+</body>
+</html>
